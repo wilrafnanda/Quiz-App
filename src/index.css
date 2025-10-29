@@ -1,16 +1,103 @@
+@keyframes pulse-fast {
+  0% {
+    box-shadow: 0 0 0 0 #ff2d55;
+  }
+  50% {
+    box-shadow: 0 0 24px 6px #ff2d55;
+  }
+  100% {
+    box-shadow: 0 0 0 0 #ff2d55;
+  }
+}
+.animate-pulse-fast {
+  animation: pulse-fast 0.5s infinite;
+}
 @import "tailwindcss";
 
 :root {
-  font-family: sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial;
   line-height: 1.5;
   font-weight: 400;
-  /* background-color: #242424; */
   color: #cae4eb;
-  background: linear-gradient(to bottom, #0e1319, #1d2834, #0e1319);
+  --app-bg: linear-gradient(180deg, #05060a 0%, #07101a 40%, #03060a 100%);
 
-
+  /* original neon palette */
+  --bg: #030615;
+  --panel: rgba(10, 18, 24, 0.6);
+  --glass: rgba(15, 24, 35, 0.55);
+  --primary: #7c5cff; /* violet */
+  --accent: #00ffd1; /* neon mint */
+  --muted: #8ea6b0;
+  --neon-glow: 0 4px 30px rgba(124, 92, 255, 0.18),
+    0 0 12px rgba(0, 255, 209, 0.06);
+  --glass-border: rgba(124, 92, 255, 0.12);
 }
-html, body {
+
+[data-theme="light"] {
+  color: #0b1220;
+  --app-bg: linear-gradient(180deg, #f4f7fb 0%, #f1f5ff 40%, #eef4ff 100%);
+  --bg: #f6f8fc;
+  --panel: rgba(255, 255, 255, 0.8);
+  --glass: rgba(255, 255, 255, 0.7);
+  --primary: #8a63ff;
+  --accent: #00e6bf;
+  --muted: #00052e;
+  --neon-glow: 0 4px 30px rgba(138, 99, 255, 0.14), 0 0 12px rgba(0, 230, 191, 0.08);
+  --glass-border: rgba(138, 99, 255, 0.12);
+}
+
+html,
+body {
   height: 100%;
   margin: 0;
+  background: var(--app-bg);
+}
+
+/* Reusable futuristic helpers */
+.futuristic-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.01)
+  );
+  backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--neon-glow);
+}
+
+
+.neon-text {
+  color: var(--primary);
+  text-shadow: 0 2px 12px rgba(124, 92, 255, 0.18),
+    0 0 8px rgba(0, 255, 209, 0.06);
+}
+
+.futuristic-btn {
+  background: linear-gradient(90deg, var(--accent), rgba(124, 92, 255, 0.85));
+  color: #07101a;
+  box-shadow: 0 6px 20px rgba(0, 255, 209, 0.06),
+    0 2px 6px rgba(124, 92, 255, 0.12) inset;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* small responsive tweaks for content */
+.container-responsive {
+  width: 95%;
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .container-responsive {
+    width: 80%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-responsive {
+    width: 70%;
+  }
 }

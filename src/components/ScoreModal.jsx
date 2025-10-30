@@ -2,11 +2,24 @@ import React, { useEffect, useState } from "react";
 
 const ScoreModal = ({ score, onRestart }) => {
   const [open, setOpen] = useState(false);
+  const [highScore, setHighScore] = useState(() => {
+    const v = Number(localStorage.getItem('quiz_high_score') || 0);
+    return Number.isFinite(v) ? v : 0;
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempHighScore, setTempHighScore] = useState("");
 
   useEffect(() => {
     const t = setTimeout(() => setOpen(true), 20);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    if (score > highScore) {
+      setHighScore(score);
+      localStorage.setItem('quiz_high_score', String(score));
+    }
+  }, [score, highScore]);
 
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center`}>
@@ -31,6 +44,55 @@ const ScoreModal = ({ score, onRestart }) => {
               </span>
             </div>
           </div>
+        </div>
+
+        <div className="mb-6 text-center">
+          <div className="text-sm text-[color:var(--muted)]">High Score</div>
+          {!isEditing ? (
+            <div className="mt-1 text-xl font-extrabold">
+              {highScore}
+            </div>
+          ) : (
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <input
+                type="number"
+                min="0"
+                className="px-3 py-2 w-28 rounded-xl border border-[color:var(--glass-border)] bg-[color:var(--glass)] text-center"
+                value={tempHighScore}
+                onChange={(e) => setTempHighScore(e.target.value)}
+              />
+              <button
+                onClick={() => {
+                  const v = Number(tempHighScore);
+                  if (Number.isFinite(v) && v >= 0) {
+                    setHighScore(v);
+                    localStorage.setItem('quiz_high_score', String(v));
+                    setIsEditing(false);
+                    setTempHighScore("");
+                  }
+                }}
+                className="py-2 px-4 rounded-xl font-semibold text-[#111424] bg-gradient-to-r from-[#28ff5e] to-[#19fff3]"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => { setIsEditing(false); setTempHighScore(""); }}
+                className="py-2 px-4 rounded-xl border border-[color:var(--glass-border)] text-[color:var(--muted)]"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+          {!isEditing && (
+            <div className="mt-2">
+              <button
+                onClick={() => { setTempHighScore(String(highScore)); setIsEditing(true); }}
+                className="py-1.5 px-4 rounded-xl border border-[color:var(--glass-border)] text-[color:var(--muted)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent)] transition-colors"
+              >
+                Edit
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-center gap-3">

@@ -6,6 +6,10 @@ import FloatingBackground from "./FloatingBackground.jsx";
 const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
   const [questionNumber, setQuestionNumber] = useState(0);
   const [score, _setScore] = useState(0);
+  const [highScore, setHighScore] = useState(() => {
+    const v = Number(localStorage.getItem('quiz_high_score') || 0);
+    return Number.isFinite(v) ? v : 0;
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [questions, setQuestion] = useState([]);
   const [isOffline, setIsOffline] = useState(false);
@@ -39,6 +43,7 @@ const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
     setTimer(30);
     setTimerActive(true);
     setIsDisabled(false);
+    setSelectedAnswer(null);
   }, [questionNumber, isLoading, isOffline]);
 
   useEffect(() => {
@@ -49,6 +54,19 @@ const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
     }, 1000);
     return () => clearInterval(id);
   }, [mode, sprintTimeLeft, isLoading, isOffline]);
+
+  // Persist high score only when the game is over (final score)
+  useEffect(() => {
+    const isGameOver = (
+      (mode !== 'sprint' && mode !== 'endless' && questionNumber >= (amount || 15)) ||
+      (mode === 'sprint' && sprintTimeLeft <= 0) ||
+      (mode === 'endless' && lives <= 0)
+    );
+    if (isGameOver && score > highScore) {
+      setHighScore(score);
+      localStorage.setItem('quiz_high_score', String(score));
+    }
+  }, [mode, questionNumber, amount, sprintTimeLeft, lives, score, highScore]);
 
   let url = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}`;
   console.log(category, difficulty, amount, url);
@@ -118,6 +136,9 @@ const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
       <div className="flex items-center justify-between mb-4">
         <span className="px-3 py-2 rounded-2xl text-[1rem] font-bold bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--accent)] bg-clip-text text-transparent 2xl:text-[2.2rem] xl:text-[1.4rem]">
           Score: {score}
+        </span>
+        <span className="px-3 py-2 rounded-2xl text-[1rem] font-bold bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--accent)] bg-clip-text text-transparent 2xl:text-[2.2rem] xl:text-[1.4rem]">
+          High: {highScore}
         </span>
         <div className="flex items-center gap-3 text-sm text-[color:var(--muted)] 2xl:text-[2rem] xl:text-[1.4rem]">
           <div>Question {questionNumber + 1}</div>
@@ -254,9 +275,9 @@ const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
                       ? selectedAnswer.isCorrect
                         ? "bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--accent)] text-[#111424] shadow-lg shadow-[color:var(--primary)]/20"
                         : "bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-500/20"
+                      : selectedAnswer && !selectedAnswer.isCorrect && answer.isCorrect
+                        ? "bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--accent)] text-[#111424] shadow-lg shadow-[color:var(--primary)]/20"
                         : "bg-[color:var(--panel)] hover:bg-[color:var(--glass)] border border-[color:var(--glass-border)] hover:border-[color:var(--accent)]"
-                  }
-                      : "bg-[#0ee3ffb0]"
                   }
                   `}
                 disabled={isDisabled}
@@ -272,7 +293,9 @@ const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
                       ? selectedAnswer.isCorrect
                         ? "bg-[#111424]"
                         : "bg-white"
-                      : "bg-[color:var(--accent)]/30 group-hover:bg-[color:var(--accent)]"
+                      : selectedAnswer && !selectedAnswer.isCorrect && answer.isCorrect
+                        ? "bg-[#111424]"
+                        : "bg-[color:var(--accent)]/30 group-hover:bg-[color:var(--accent)]"
                   }
                 `}
                 >
@@ -283,7 +306,7 @@ const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
                     transform scale-0 group-hover:scale-100
                     transition-transform duration-300
                     ${
-                      selectedAnswer && answer === selectedAnswer
+                      selectedAnswer && (answer === selectedAnswer || (!selectedAnswer.isCorrect && answer.isCorrect))
                         ? "scale-100"
                         : ""
                     }
@@ -292,7 +315,9 @@ const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
                         ? selectedAnswer.isCorrect
                           ? "bg-[#28ff5e]"
                           : "bg-red-500"
-                        : "bg-[#111424]"
+                        : selectedAnswer && !selectedAnswer.isCorrect && answer.isCorrect
+                          ? "bg-[#28ff5e]"
+                          : "bg-[#111424]"
                     }
                   `}
                   />
@@ -307,7 +332,9 @@ const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
                       ? selectedAnswer.isCorrect
                         ? "text-[#111424]"
                         : "text-white"
-                      : "text-[color:var(--muted)] group-hover:text-[color:var(--accent)]"
+                      : selectedAnswer && !selectedAnswer.isCorrect && answer.isCorrect
+                        ? "text-[#111424]"
+                        : "text-[color:var(--muted)] group-hover:text-[color:var(--accent)]"
                   }
                 `}
                 >

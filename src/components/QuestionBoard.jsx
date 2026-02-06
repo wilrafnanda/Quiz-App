@@ -359,12 +359,12 @@ const QuestionBoard = ({ category, amount, difficulty, mode, onExit }) => {
             >
               Stop Game
             </button>
-            <button
+            {/* <button
               className="py-2 px-6 bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--accent)] text-[#111424] font-bold rounded-xl hover:from-[color:var(--accent)] hover:to-[color:var(--primary)] transition-all duration-300 2xl:py-6 2xl:px-20 2xl:text-[1rem]"
               onClick={handleClick}
             >
               Next
-            </button>
+            </button> */}
           </div>
         </>
       )}

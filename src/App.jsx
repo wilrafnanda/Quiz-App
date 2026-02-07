@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import LandingPage from "../Pages/LandingPage";
-import QuestionLayout from "./components/questionLayout";
+import QuestionLayout from "./components/QuestionLayout";
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);

@@ -3,7 +3,7 @@
     box-shadow: 0 0 0 0 #ff2d55;
   }
   50% {
-    box-shadow: 0 0 24px 6px #ff2d55;
+    box-shadow: 0 1 24px 6px #ff2d55;
   }
   100% {
     box-shadow: 0 0 0 0 #ff2d55;

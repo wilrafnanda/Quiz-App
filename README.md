@@ -34,8 +34,7 @@ Tech Stack
 
 Technical Highlights
 
-### Utility-First Styling in Mobile
-Using Tailwind in React Native allowed me to rapidly prototype the UI while keeping the codebase clean. 
+### Utility-First Styling 
 
 ```jsx
 // Example of a styled Quiz Button
